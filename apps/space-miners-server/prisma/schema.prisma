@@ -1,0 +1,80 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Ship {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  speed         Int?
+  cargoCapacity Int?
+  power         Int?
+  name          String?
+  player        Player?  @relation(fields: [playerId], references: [id])
+  playerId      String?
+}
+
+model Player {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  level      Int?
+  name       String?
+  experience Int?
+  currency   Int?
+  items      Json?
+  ships      Ship[]
+  squadrons  Squadron[]
+}
+
+model Technology {
+  id                     String   @id @default(cuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  name                   String?
+  description            String?
+  cost                   Int?
+  playerLevelRequirement Int?
+}
+
+model Squadron {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  members   Json?
+  player    Player?  @relation(fields: [playerId], references: [id])
+  playerId  String?
+}
+
+model Task {
+  id          String             @id @default(cuid())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  description String?
+  typeField   EnumTaskTypeField?
+  reward      Int?
+}
+
+model Resource {
+  id        String                 @id @default(cuid())
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+  value     Float?
+  quantity  Int?
+  typeField EnumResourceTypeField?
+  name      String?
+}
+
+enum EnumTaskTypeField {
+  Option1
+}
+
+enum EnumResourceTypeField {
+  Option1
+}
